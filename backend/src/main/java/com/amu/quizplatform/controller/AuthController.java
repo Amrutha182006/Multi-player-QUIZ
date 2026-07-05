@@ -1,10 +1,12 @@
 package com.amu.quizplatform.controller;
 
+import com.amu.quizplatform.dto.LoginRequest;
 import com.amu.quizplatform.dto.RegisterRequest;
 import com.amu.quizplatform.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -19,6 +21,13 @@ public class AuthController {
     public void register(@Valid @RequestBody RegisterRequest request) {
 
         authService.register(request);
+
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody LoginRequest request) {
+
+        return ResponseEntity.ok(authService.login(request));
 
     }
 }
