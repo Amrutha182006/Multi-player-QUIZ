@@ -19,6 +19,7 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordencoder;
     private final AuthenticationManager authenticationManager;
+    private final JWTService jwtService;
 
     @Override
     public void register(RegisterRequest request) {
@@ -48,7 +49,7 @@ public class AuthServiceImpl implements AuthService {
                         request.getUsername(),
                         request.getPassword()));
 
-        return "Login Successful";
+        return jwtService.generateToken(request.getUsername());
     }
 
 }
