@@ -16,15 +16,15 @@ public class Question {
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
     private Long id;
     @Column(nullable=false)
-    private String Question;
+    private String question;
     @Column(nullable=false)
-    private String OptionA;
+    private String optiona;
     @Column(nullable=false)
-    private String OptionB;
+    private String optionb;
     @Column(nullable=false)
-    private String OptionC;
+    private String optionc;
     @Column(nullable=false)
-    private String OptionD;
+    private String optiond;
     @Column(nullable=false)
-    private String CorrectAnswer;    
+    private String correct_answer;    
 }
