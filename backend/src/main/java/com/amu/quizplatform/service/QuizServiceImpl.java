@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class QuizServiceIml implements QuizService {
+public class QuizServiceImpl implements QuizService {
 
     private final QuizRepository quizRepository;
     private final QuestionRepository questionRepository;

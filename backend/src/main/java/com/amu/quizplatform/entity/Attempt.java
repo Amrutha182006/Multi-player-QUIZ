@@ -1,8 +1,9 @@
 package com.amu.quizplatform.entity;
-
+ 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -23,7 +24,7 @@ public class Attempt
     private Integer score;
     private Integer timeSpent;
     private LocalDateTime attemptedAt;
-    @OneToMany(mappedBy="attempt")
-    private List<AttemptAnswers>answers;
+    @OneToMany(mappedBy="attempt",cascade = CascadeType.ALL)
+    private Set<AttemptAnswers>answers;
 
 }
