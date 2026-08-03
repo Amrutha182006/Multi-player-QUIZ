@@ -11,6 +11,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.amu.quizplatform.dto.AttemptAnswerDTO;
+import com.amu.quizplatform.dto.AttemptDetailsDTO;
 import com.amu.quizplatform.dto.AttemptResultDTO;
 import com.amu.quizplatform.dto.AttemptSummaryDTO;
 import com.amu.quizplatform.dto.SubmitQuizRequestDTO;
@@ -79,20 +81,57 @@ public class AttemptServiceImpl implements AttemptService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         User user = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
-        List<Attempt> attemptList=attemptRepository.findByUser(user);
-        List<AttemptSummaryDTO> result=new ArrayList<>();
+        List<Attempt> attemptList = attemptRepository.findByUser(user);
+        List<AttemptSummaryDTO> result = new ArrayList<>();
         for (Attempt attempt : attemptList) {
-               
-            AttemptSummaryDTO dto=new AttemptSummaryDTO();
+
+            AttemptSummaryDTO dto = new AttemptSummaryDTO();
             dto.setAttemptId(attempt.getId());
             dto.setQuizTitle(attempt.getQuiz().getTitle());
             dto.setScore(attempt.getScore());
             dto.setTimeSpent(attempt.getTimeSpent());
             dto.setTotalQuestion(attempt.getQuiz().getQuestions().size());
             dto.setAttemptedAt(attempt.getAttemptedAt());
-            
+
             result.add(dto);
         }
         return result;
+    }
+
+    @Override
+    public AttemptDetailsDTO getAttempt(Long id) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        Attempt attempt = attemptRepository.findById(id).orElseThrow(() -> new RuntimeException("Attempt not found"));
+        if (!attempt.getUser().getUsername().equals(username)) {
+            throw new RuntimeException("Unauthorized");
+        }
+        AttemptDetailsDTO Attemptdto = new AttemptDetailsDTO();
+        Attemptdto.setAttemptId(attempt.getId());
+        Attemptdto.setQuizTitle(attempt.getQuiz().getTitle());
+        Attemptdto.setScore(attempt.getScore());
+        Attemptdto.setTimeSpent(attempt.getTimeSpent());
+        Attemptdto.setTotalQuestion(attempt.getQuiz().getQuestions().size());
+        Attemptdto.setAttemptedAt(attempt.getAttemptedAt());
+        List<AttemptAnswerDTO> answerDTOs = new ArrayList<>();
+        for (AttemptAnswers answer : attempt.getAnswers()) {
+            AttemptAnswerDTO dto = new AttemptAnswerDTO();
+            dto.setQuestionId(answer.getQuestion().getId());
+            dto.setQuestion(answer.getQuestion().getQuestion());
+            dto.setOptionA(answer.getQuestion().getOptiona());
+            dto.setOptionB(answer.getQuestion().getOptionb());
+            dto.setOptionC(answer.getQuestion().getOptionc());
+            dto.setOptionD(answer.getQuestion().getOptiond());
+            dto.setUserAnswer(answer.getUserAnswer());
+            dto.setCorrectAnswer(answer.getQuestion().getCorrect_answer());
+            dto.setIsCorrect(
+                    String.valueOf(answer.getUserAnswer())
+                            .equalsIgnoreCase(answer.getQuestion().getCorrect_answer()));
+
+            answerDTOs.add(dto);
+        }
+        Attemptdto.setAnswers(answerDTOs);
+        return Attemptdto;
     }
 }

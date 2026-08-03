@@ -3,6 +3,7 @@ package com.amu.quizplatform.controller;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,9 +33,9 @@ public class AttemptController {
     }
 
     @GetMapping("/{id}")
-    public AttemptAnswerDTO getAttempt()
+    public AttemptDetailsDTO getAttempt(@PathVariable Long id)
     {
-        return attemptService.getMyAttempts();
+        return attemptService.getAttempt(id);
     }
 
 }
