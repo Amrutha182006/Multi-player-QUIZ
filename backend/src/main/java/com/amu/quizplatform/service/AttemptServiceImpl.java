@@ -15,6 +15,7 @@ import com.amu.quizplatform.dto.AttemptAnswerDTO;
 import com.amu.quizplatform.dto.AttemptDetailsDTO;
 import com.amu.quizplatform.dto.AttemptResultDTO;
 import com.amu.quizplatform.dto.AttemptSummaryDTO;
+import com.amu.quizplatform.dto.LeaderboardDTO;
 import com.amu.quizplatform.dto.SubmitQuizRequestDTO;
 import com.amu.quizplatform.entity.Attempt;
 import com.amu.quizplatform.entity.AttemptAnswers;
@@ -134,4 +135,34 @@ public class AttemptServiceImpl implements AttemptService {
         Attemptdto.setAnswers(answerDTOs);
         return Attemptdto;
     }
+
+    @Override
+    public List<LeaderboardDTO> getLeaderboard(Long quizId) {
+        Quiz quiz = quizRepository.findById(quizId).orElseThrow(() -> new RuntimeException("Quiz not found"));
+        List<Attempt> attempts = attemptRepository.findByQuizOrderByScoreDescTimeSpentAsc(quiz);
+        List<LeaderboardDTO> leaderboard = new ArrayList<>();
+        int rank = 1;
+        int previousScore=-1;
+        int previousTime=-1;
+
+        List<LeaderboardDTO> result = new ArrayList<>();
+        for (Attempt attempt : attempts) {
+
+            if(attempt.getScore()!=previousScore || attempt.getTimeSpent()!= previousTime)
+                rank = result.size() +1;
+            LeaderboardDTO dto = new LeaderboardDTO();
+            dto.setRank(rank);
+            dto.setUsername(attempt.getUser().getUsername());
+            dto.setScore(attempt.getScore());
+            dto.setTimeSpent(attempt.getTimeSpent());
+            leaderboard.add(dto);
+
+            result.add(dto);
+            previousScore=dto.getScore();
+            previousTime=dto.getTimeSpent();
+            
+        }
+        return leaderboard;
+    }
+
 }

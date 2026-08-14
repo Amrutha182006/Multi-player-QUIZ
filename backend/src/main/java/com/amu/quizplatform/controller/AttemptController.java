@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.amu.quizplatform.dto.*;
-import com.amu.quizplatform.entity.Attempt;
 import com.amu.quizplatform.service.AttemptService;
 
 import lombok.RequiredArgsConstructor;
@@ -36,6 +35,11 @@ public class AttemptController {
     public AttemptDetailsDTO getAttempt(@PathVariable Long id)
     {
         return attemptService.getAttempt(id);
+    }
+    @GetMapping("/{quizId}")
+    public List<LeaderboardDTO> getLeaderboard(Long quizId)
+    {
+        return attemptService.getLeaderboard(quizId);
     }
 
 }
